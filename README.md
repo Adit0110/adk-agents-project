@@ -1,95 +1,103 @@
-# LinkedIn Post Generator Loop Agent
+# Agent Development Kit (ADK) 
 
-This example demonstrates the use of a Sequential and Loop Agent pattern in the Agent Development Kit (ADK) to generate and refine a LinkedIn post.
+This repository contains examples for learning Google's Agent Development Kit (ADK), a powerful framework for building LLM-powered agents.
 
-## Overview
+## Getting Started
 
-The LinkedIn Post Generator uses a sequential pipeline with a loop component to:
-1. Generate an initial LinkedIn post
-2. Iteratively refine the post until quality requirements are met
+### Setup Environment
 
-This demonstrates several key patterns:
-1. **Sequential Pipeline**: A multi-step workflow with distinct stages
-2. **Iterative Refinement**: Using a loop to repeatedly refine content
-3. **Automatic Quality Checking**: Validating content against specific criteria
-4. **Feedback-Driven Refinement**: Improving content based on specific feedback
-5. **Loop Exit Tool**: Using a tool to terminate the loop when quality requirements are met
-
-## Architecture
-
-The system is composed of the following components:
-
-### Root Sequential Agent
-
-`LinkedInPostGenerationPipeline` - A SequentialAgent that orchestrates the overall process:
-1. First runs the initial post generator
-2. Then executes the refinement loop
-
-### Initial Post Generator
-
-`InitialPostGenerator` - An LlmAgent that creates the first draft of the LinkedIn post with no prior context.
-
-### Refinement Loop
-
-`PostRefinementLoop` - A LoopAgent that executes a two-stage refinement process:
-1. First runs the reviewer to evaluate the post and possibly exit the loop
-2. Then runs the refiner to improve the post if the loop continues
-
-### Sub-Agents Inside the Refinement Loop
-
-1. **Post Reviewer** (`PostReviewer`) - Reviews posts for quality and provides feedback or exits the loop if requirements are met
-2. **Post Refiner** (`PostRefiner`) - Refines the post based on feedback to improve quality
-
-### Tools
-
-1. **Character Counter** - Validates post length against requirements (used by the Reviewer)
-2. **Exit Loop** - Terminates the loop when all quality criteria are satisfied (used by the Reviewer)
-
-## Loop Control with Exit Tool
-
-A key design pattern in this example is the use of an `exit_loop` tool to control when the loop terminates. The Post Reviewer has two responsibilities:
-
-1. **Quality Evaluation**: Checks if the post meets all requirements
-2. **Loop Control**: Calls the exit_loop tool when the post passes all quality checks
-
-When the exit_loop tool is called:
-1. It sets `tool_context.actions.escalate = True`
-2. This signals to the LoopAgent that it should stop iterating
-
-This approach follows ADK best practices by:
-1. Separating initial generation from refinement
-2. Giving the quality reviewer direct control over loop termination
-3. Using a dedicated agent for post refinement
-4. Using a tool to manage the loop control flow
-
-## Usage
-
-To run this example:
+You only need to create one virtual environment for all examples in this course. Follow these steps to set it up:
 
 ```bash
-cd 11-loop-agent
-adk web
+# Create virtual environment in the root directory
+python -m venv .venv
+
+# Activate (each new terminal)
+# macOS/Linux:
+source .venv/bin/activate
+# Windows CMD:
+.venv\Scripts\activate.bat
+# Windows PowerShell:
+.venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-Then in the web interface, enter a prompt like:
-"Generate a LinkedIn post about what I've learned from @aiwithbrandon's Agent Development Kit tutorial."
+Once set up, this single environment will work for all examples in the repository.
 
-The system will:
-1. Generate an initial LinkedIn post
-2. Review the post for quality and compliance with requirements
-3. If the post meets all requirements, exit the loop
-4. Otherwise, provide feedback and refine the post
-5. Continue this process until a satisfactory post is created or max iterations reached
-6. Return the final post
+### Setting Up API Keys
 
-## Example Input
+1. Create an account in Google Cloud https://cloud.google.com/?hl=en
+2. Create a new project
+3. Go to https://aistudio.google.com/apikey
+4. Create an API key
+5. Assign key to the project
+6. Connect to a billing account
 
-```
-Generate a LinkedIn post about what I've learned from @aiwithbrandon's Agent Development Kit tutorial.
-```
+Each example folder contains a `.env.example` file. For each project you want to run:
 
-## Loop Termination
+1. Navigate to the example folder
+2. Rename `.env.example` to `.env` 
+3. Open the `.env` file and replace the placeholder with your API key:
+   ```
+   GOOGLE_API_KEY=your_api_key_here
+   ```
 
-The loop terminates in one of two ways:
-1. When the post meets all quality requirements (reviewer calls the exit_loop tool)
-2. After reaching the maximum number of iterations (10)
+You'll need to repeat this for each example project you want to run.
+
+## Examples Overview
+
+Here's what you can learn from each example folder:
+
+### 1. Basic Agent
+Introduction to the simplest form of ADK agents. Learn how to create a basic agent that can respond to user queries.
+
+### 2. Tool Agent
+Learn how to enhance agents with tools that allow them to perform actions beyond just generating text.
+
+### 3. LiteLLM Agent
+Example of using LiteLLM to abstract away LLM provider details and easily switch between different models.
+
+### 4. Structured Outputs
+Learn how to use Pydantic models with `output_schema` to ensure consistent, structured responses from your agents.
+
+### 5. Sessions and State
+Understand how to maintain state and memory across multiple interactions using sessions.
+
+### 6. Persistent Storage
+Learn techniques for storing agent data persistently across sessions and application restarts.
+
+### 7. Multi-Agent
+See how to orchestrate multiple specialized agents working together to solve complex tasks.
+
+### 8. Stateful Multi-Agent
+Build agents that maintain and update state throughout complex multi-turn conversations.
+
+### 9. Callbacks
+Implement event callbacks to monitor and respond to agent behaviors in real-time.
+
+### 10. Sequential Agent
+Create pipeline workflows where agents operate in a defined sequence to process information.
+
+### 11. Parallel Agent
+Leverage concurrent operations with parallel agents for improved efficiency and performance.
+
+### 12. Loop Agent
+Build sophisticated agents that can iteratively refine their outputs through feedback loops.
+
+## Official Documentation
+
+For more detailed information, check out the official ADK documentation:
+- https://google.github.io/adk-docs/get-started/quickstart
+
+## Support
+
+Need help or run into issues? Join our free AI Developer Accelerator community on Skool:
+- [AI Developer Accelerator Community](https://www.skool.com/ai-developer-accelerator/about)
+
+In the community you'll find:
+- Weekly coaching and support calls
+- Early access to code from YouTube projects
+- A network of AI developers of all skill levels ready to help
+- Behind-the-scenes looks at how these apps are built
